@@ -11,31 +11,43 @@ ALN_CMD = "minimap2/minimap2 " + config['opts'] + " -t " + config['threads']
 
 AUX_THREADS = int(config['threads']) - 1
 
-rule all:
-     input: expand("{sample}.bam", sample=config['name'])
+SAMPLES=config['name']
 
+ruleorder: sortBam > makeBam
+
+rule dummy:
+     input: expand("{sample}.read.depth.mean.txt", sample=SAMPLES)
+
+rule meanDepth:
+     message: "[INFO] getting read depth."
+     input  : SORTED_BAM="{sample}.sort.bam", ST="samtools/samtools"
+     output : "{sample}.read.depth.mean.txt"
+     shell  : """
+     	    {input.ST} depth -aa {input.SORTED_BAM} | perl scripts/mean.pl >  {output}
+     """
+     
 rule sortBam:
-     message: "[INFO] sorting bam."
-     input  : "{sample}.bam"
+     message: "[INFO] sorting BAM."
+     input  : BAM="{sample}.bam", ST="samtools/samtools"
      output : protected("{sample}.sort.bam")
      shell  : """
-     	    samtools sort -@ {AUX_THREADS} {input} > {output}      	    
-     """
-    
-rule sam2bam:
+            {input.ST} sort -@ {AUX_THREADS} {input.BAM} -o {output}
+     """  
+
+rule makeBam:
      message: "[INFO] converting sam to bam."
-     input  :  SAM=expand("{sample}.sam", sample=config['name'])
+     input  :  SAM="{sample}.sam", ST="samtools/samtools"
      output :  temp("{sample}.bam")
      shell  : """
-     	    samtools view -bS -@ {AUX_THREADS} {input} > {output}
+     	   {input.ST} view -bS -@ {AUX_THREADS} {input.SAM} > {output}
      """
 
-rule aln:
+rule makeSam:
      message: "[INFO] running alignment."
-     input  : FA=config["fasta_name"], MM="minimap2/minimap2"
+     input  : FA=config["fasta_name"], MM="minimap2/minimap2", FQ=FASTQ
      output : temp("{sample}.sam")
      shell  : """
-          {ALN_CMD} {input.FA} {FASTQ} > {output}
+          {ALN_CMD} {input.FA} {input.FQ} > {output}
      """
 
 rule samtools:
