@@ -16,14 +16,23 @@ SAMPLES=config['name']
 ruleorder: sortBam > makeBam
 
 rule dummy:
-     input: expand("{sample}.read.depth.mean.txt", sample=SAMPLES)
+     input: expand("{sample}.read.depth.smooth.txt", sample=SAMPLES)
+
+rule smoother:
+     message : "[INFO] smoothing read depth"
+     input   : DEPTH="{sample}.read.depth.txt", SMOOTHER="vcflib/bin/smoother"
+     output  : "{sample}.read.depth.smooth.txt"
+     shell   : """
+     	          {input.SMOOTHER} -o col3 -w 100 -s 100 -t -f {input.DEPTH} > {output}
+     """
+
 
 rule meanDepth:
      message: "[INFO] getting read depth."
      input  : SORTED_BAM="{sample}.sort.bam", ST="samtools/samtools"
-     output : "{sample}.read.depth.mean.txt"
+     output : "{sample}.read.depth.txt"
      shell  : """
-     	    {input.ST} depth -aa {input.SORTED_BAM} | perl scripts/mean.pl >  {output}
+     	    {input.ST} depth -aa {input.SORTED_BAM} >  {output}
      """
      
 rule sortBam:
@@ -73,6 +82,17 @@ rule htslib:
             git checkout 49fdfbda20acbd73303df3c7fef84f2d972c5f8d
             make
      """
+
+rule vcflib:
+     message: "[INFO] installing vcflib"
+     output : "vcflib/bin/smoother"
+     shell  : """
+     	    git clone --recursive https://github.com/vcflib/vcflib.git
+     	    cd vcflib
+	    git checkout b17eed65ed6b40f1244c4f09ae86800e9ae9a1d6
+	    make
+     """
+     
 
 rule golang :
      message: "[INFO] installing gdrive."
