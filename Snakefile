@@ -143,7 +143,7 @@ rule vcflib:
      """
      
 
-rule golang :
+rule gdrive :
      message: "[INFO] installing gdrive."
      output : "/home/ec2-user/go/bin/gdrive"
      shell  : """
