@@ -3,6 +3,8 @@
     "opts"        : "-x map-pb -a",
     "name"        : "sample_name",
     "lib"         : "la",
+    "low_depth"   : "2",
+    "times_mean"  : "3",
     "fasta_name"  : "PGA1_jelly_arrow_pilon_pallidicuale.gapsplit.fasta",
     "fastq_names" : "m54120_170710_225913.subreads.fasta,m54120_170711_085749.subreads.fasta,m54120_170711_190715.subreads.fasta"
 }

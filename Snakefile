@@ -16,7 +16,46 @@ SAMPLES=config['name']
 ruleorder: sortBam > makeBam
 
 rule dummy:
-     input: expand("{sample}.read.depth.smooth.txt", sample=SAMPLES)
+     input: expand("{sample}.new_fasta.fasta", sample=SAMPLES)
+     
+rule getFasta:
+     message: "[INFO] getting fasta"
+     input  : BF="{sample}.broken.bed", BT="bedtools2/bin/bedtools", FA=config["fasta_name"],  ST="samtools/samtools"
+     output : "{sample}.new_fasta.fasta"
+     shell  : """
+     	    sort -k1,1 -k2,2n {input.BF} > {wildcards.sample}.broken.sorted.bed
+	    {input.BT} getfasta -name -fi {input.FA} -fo {output} -bed {wildcards.sample}.broken.sorted.bed   	         	      
+	    {input.ST} faidx {output}
+	    
+
+          """ 	
+     
+
+
+rule lowdepth:
+     message: "[INFO] finding low depth regions: <= %s" % config['low_depth']
+     input  : MEAN="{sample}.read.depth.smooth.mean.txt", SMOOTHED="{sample}.read.depth.smooth.txt", BT="bedtools2/bin/bedtools"
+     output : "{sample}.broken.bed"
+     params : LOW=config['low_depth'], MULT=config['times_mean']
+     shell  : """
+     	    cat {input.SMOOTHED} | perl -lane 'print if $F[4] <= {params.LOW}' | {input.BT} merge  -c 5 -o collapse -i - | perl -lane '$F[3] = "$F[0]_ld:$F[1]-$F[2]"; print join "\\t", @F' > {output}
+	    
+	    export HIGH=$(cat {input.MEAN})
+	    echo $HIGH	    
+	    
+	    cat {input.SMOOTHED} | perl -lane 'print if $F[4] >= {params.MULT} * '"$HIGH"';' | {input.BT} merge  -c 5 -o collapse -i - | perl -lane '$F[3] = "$F[0]_hd:$F[1]-$F[2]"; print join "\\t", @F' >> {output}
+
+	      cat {input.SMOOTHED} | perl -lane 'print if ($F[4] < {params.MULT} * '"$HIGH"' ) && ($F[4] > {params.LOW})' |  {input.BT} merge  -c 5 -o collapse -i - | perl -lane '$F[3] = "$F[0]_nd:$F[1]-$F[2]"; print join "\\t", @F' >> {output}
+
+     """
+
+rule meanSmooth:
+     message : "[INFO] calculating mean depth"
+     input   : "{sample}.read.depth.smooth.txt"
+     output  : "{sample}.read.depth.smooth.mean.txt" 
+     shell   : """
+     	       cat {input} | perl scripts/mean.pl > {output}
+          """
 
 rule smoother:
      message : "[INFO] smoothing read depth"
@@ -87,6 +126,7 @@ rule vcflib:
      message: "[INFO] installing vcflib"
      output : "vcflib/bin/smoother"
      shell  : """
+     	    rm -rf vcflib
      	    git clone --recursive https://github.com/vcflib/vcflib.git
      	    cd vcflib
 	    git checkout b17eed65ed6b40f1244c4f09ae86800e9ae9a1d6
@@ -111,3 +151,14 @@ rule minimap2:
      	    git checkout 39a96662463c3f0dd8c64c70445fc0261721f010
      	    make
      """
+
+rule bedtools2:
+     message: "[INFO] installing bedtools2"
+     output: "bedtools2/bin/bedtools"
+     shell: """
+     	    rm -rf bedtools2
+     	    git clone https://github.com/arq5x/bedtools2.git
+	    cd bedtools2
+	    git checkout f3bc2435d6ec41dfaff148a18034d4610439aa6a
+	    make
+          """     

@@ -9,7 +9,7 @@ my $n   = 0;
 while(<STDIN>){
     chomp;
     my @l = split /\t/, $_;
-    $sum += $l[2];
+    $sum += $l[4];
     $n++;
 }
 
