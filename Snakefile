@@ -15,17 +15,26 @@ SAMPLES=config['name']
 
 ruleorder: sortBam > makeBam
 
-rule dummy:
-     input: expand("{sample}.new_fasta.fasta", sample=SAMPLES)
-     
+rule wrappingUp  :
+     input  : RESULT=expand("{sample}.new_fasta.fasta", sample=SAMPLES), BED=expand("{sample}.broken.sorted.bed", sample=SAMPLES)
+     message: "[INFO] getting fasta"
+     output : "RESULTS.tar.gz"
+     shell  : """
+     	    cat {input.BED} | perl scripts/summary.pl > REPORT.txt 2> MATLOCK_EXCLUDE_LIST.txt
+	    
+	    cp config.json config.json.bk
+	    
+	    tar -cvf RESULTS.tar.gz REPORT.txt MATLOCK_EXCLUDE_LIST.txt {input.RESULT} {input.BED} docs/README.md config.json.bk
+     """     
+
 rule getFasta:
      message: "[INFO] getting fasta"
      input  : BF="{sample}.broken.bed", BT="bedtools2/bin/bedtools", FA=config["fasta_name"],  ST="samtools/samtools"
-     output : "{sample}.new_fasta.fasta"
+     output : RFA="{sample}.new_fasta.fasta", BD="{sample}.broken.sorted.bed"
      shell  : """
-     	    sort -k1,1 -k2,2n {input.BF} > {wildcards.sample}.broken.sorted.bed
-	    {input.BT} getfasta -name -fi {input.FA} -fo {output} -bed {wildcards.sample}.broken.sorted.bed   	         	      
-	    {input.ST} faidx {output}
+     	    sort -k1,1 -k2,2n {input.BF} > {output.BD}
+	    {input.BT} getfasta -name -fi {input.FA} -fo {output.RFA} -bed {output.BD}
+	    {input.ST} faidx {output.RFA}
 	    
 
           """ 	
