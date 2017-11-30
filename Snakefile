@@ -127,7 +127,7 @@ rule htslib:
      shell: """
      	    git clone https://github.com/samtools/htslib.git
       	    cd htslib
-            git checkout 49fdfbda20acbd73303df3c7fef84f2d972c5f8d
+            git checkout 746549da5371c7689ebd81f693c9bd10aa984623
             make
      """
 
