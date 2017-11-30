@@ -114,7 +114,7 @@ rule samtools:
      shell  : """
                git clone https://github.com/samtools/samtools.git
                cd samtools
-               git checkout 6c87075a5d9ded7a65a7c0847e7ceb18e09c0bb0
+               git checkout f4dc22aa25f0d2a7a09b5d8a8299f6749ef4fcda
 	       autoheader
 	       autoconf -Wno-syntax  
 	       ./configure
