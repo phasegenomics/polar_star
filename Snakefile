@@ -114,7 +114,7 @@ rule samtools:
      shell  : """
                git clone https://github.com/samtools/samtools.git
                cd samtools
-               git checkout f4dc22aa25f0d2a7a09b5d8a8299f6749ef4fcda
+               git checkout f510fb1aac5ee8e190696fe0bb54900ac811b703
 	       autoheader
 	       autoconf -Wno-syntax  
 	       ./configure
@@ -127,7 +127,7 @@ rule htslib:
      shell: """
      	    git clone https://github.com/samtools/htslib.git
       	    cd htslib
-            git checkout 746549da5371c7689ebd81f693c9bd10aa984623
+            git checkout 49fdfbda20acbd73303df3c7fef84f2d972c5f8d
             make
      """
 
