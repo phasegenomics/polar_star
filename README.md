@@ -57,24 +57,24 @@ edit the config.json file.
 
 Q: What if i don't want to break on low read depth?
   
-  *A: set "low_depth" key to -1.*
+  +*A: set "low_depth" key to -1.*
    
 Q: How is the high depth caculated?
    
-   *A: Polar Star calculates the mean, then multiplies the value in "times_mean".*
+   +*A: Polar Star calculates the mean, then multiplies the value in "times_mean".*
    
 Q: How did you come up with the "times_mean" default?
    
-   *A: Read depth can be modeled with a negative binomial distribution, but I was too lazy. I'm using a poisson. So the mean = the standard deviation.*
+   +*A: Read depth can be modeled with a negative binomial distribution, but I was too lazy. I'm using a poisson. So the mean = the standard deviation.*
    
 Q: How can I reject breaks.
    
-   *A: Edit the bed file that is the input for the "getFasta" rule.*
+   +*A: Edit the bed file that is the input for the "getFasta" rule.*
 
 Q: How can I add breaks.
    
-   *A: Edit the bed file that is the input for the "getFasta" rule.*
+   +*A: Edit the bed file that is the input for the "getFasta" rule.*
 
 Q: I already have an alignment, how can i use that?
 
-  *A: Snakemake is smart. Check the input to the "meanDepth" rule and match the file name. You'll need to change the config.json so the names match.*
+  +*A: Snakemake is smart. Check the input to the "meanDepth" rule and match the file name. You'll need to change the config.json so the names match.*
