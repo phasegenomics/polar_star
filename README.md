@@ -42,3 +42,32 @@ edit the config.json file.
 ```
  snakemake -p -s Snakefile
 ```
+
+## What is Polar Star doing?
+
+1. Aligning the long-reads to the assembly.
+2. Caculating read depth at every base.
+3. Smoothing the read depht in a 100bp sliding window.
+4. Merging regions of high (_hd), low (_ld), and normal read depth (_nd).
+5. Creating a new fasta that is broken.
+6. Generates simple statistics
+
+
+## FAQ
+
+Q: What if i don't want to break on low read depth?
+   A: set "low_depth" key to -1.
+   
+Q: How is the high depth caculated?
+   A: Polar Star calculates the mean, then multiplies the value in "times_mean". 
+   
+Q: How did you come up with the "times_mean" default?
+   A: Read depth can be modeled with a negative binomial distribution, but I was too lazy. I'm using a poisson. So the mean = the standard deviation. 
+   
+Q: How can I reject breaks.
+   A: Edit the bed file that is the input for the "getFasta" rule.
+
+Q: How can I add breaks.
+   A: Edit the bed file that is the input for the "getFasta" rule.
+
+
