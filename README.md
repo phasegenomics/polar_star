@@ -77,4 +77,4 @@ Q: How can I add breaks.
 
 Q: I already have an alignment, how can i use that?
 
-  *A: Snakemake is smart. Check the input to the "meanDepth" rule and match the file name. You'll need to change the config.json so the names match.
+  *A: Snakemake is smart. Check the input to the "meanDepth" rule and match the file name. You'll need to change the config.json so the names match.*
