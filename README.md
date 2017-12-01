@@ -50,7 +50,7 @@ edit the config.json file.
 3. Smoothing the read depht in a 100bp sliding window.
 4. Merging regions of high (_hd), low (_ld), and normal read depth (_nd).
 5. Creating a new fasta that is broken.
-6. Generates simple statistics
+6. Generates simple statistics.
 
 
 ## FAQ
