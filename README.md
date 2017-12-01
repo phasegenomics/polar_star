@@ -57,7 +57,7 @@ edit the config.json file.
 
 Q: What if i don't want to break on low read depth?
   
-  + *A: set "low_depth" key to -1.*
+  + *A: set "low_depth" value to -1.*
    
 Q: How is the high depth caculated?
    
