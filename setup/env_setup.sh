@@ -1,4 +1,5 @@
 sudo yum -y groupinstall "Development Tools"
+sudo yum -y install emacs
 sudo yum -y install git 
 sudo yum -y install python36
 sudo yum -y install go
