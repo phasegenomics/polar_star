@@ -9,6 +9,7 @@ sudo yum -y install autoconf
 sudo yum -y install bzip2-devel-1.0.6-8.12.amzn1.x86_64
 sudo yum -y install xz-devel-5.1.2-12alpha.12.amzn1.x86_64
 
+sudo yum -y install python36-devel
 sudo pip-3.6 install --upgrade pip
 sudo  pip-3.6 install --upgrade virtualenvwrapper
 
