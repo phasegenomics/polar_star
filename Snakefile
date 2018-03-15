@@ -114,22 +114,26 @@ rule samtools:
      shell  : """
                git clone https://github.com/samtools/samtools.git
                cd samtools
-               git checkout f510fb1aac5ee8e190696fe0bb54900ac811b703
-	       autoheader
-	       autoconf -Wno-syntax  
+               git checkout 6d79411685d8f0fbb34e123f52d72b63271f4dcb
+               autoheader
+               autoconf -Wno-syntax
 	       ./configure
 	       make
-       	    """
+            """
 
 rule htslib:
      message: "[INFO] installing htslib"
      output:  "htslib/libhts.a"
      shell: """
-     	    git clone https://github.com/samtools/htslib.git
-      	    cd htslib
-            git checkout 49fdfbda20acbd73303df3c7fef84f2d972c5f8d
+            git clone https://github.com/samtools/htslib.git
+            cd htslib
+            git checkout 209f94ba28d62a566c77e3fbf034e3ee76807815
+            autoheader
+            autoconf
+            ./configure
             make
      """
+
 
 rule vcflib:
      message: "[INFO] installing vcflib"
